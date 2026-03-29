@@ -43,8 +43,9 @@ class GameConfig(Config):
         self.num_rows = [3] * self.num_reels
 
         # Paytable — multipliers of total bet / num_lines per line win
+        # Wild has no independent pay — substitute only (cannot land on reel 1,
+        # so a 5-reel Wild line is mathematically impossible)
         self.paytable = {
-            (5, "W"):  18.75,
             (5, "H1"): 18.75, (4, "H1"): 3.75, (3, "H1"): 1.50,
             (5, "H2"): 12.50, (4, "H2"): 2.50, (3, "H2"): 1.00,
             (5, "H3"):  7.50, (4, "H3"): 1.25, (3, "H3"): 0.75,
