@@ -42,18 +42,22 @@ class GameConfig(Config):
         self.num_reels = 5
         self.num_rows = [3] * self.num_reels
 
-        # Paytable — multipliers of total bet / num_lines per line win
-        # Wild has no independent pay — substitute only (cannot land on reel 1,
-        # so a 5-reel Wild line is mathematically impossible)
+        # Paytable — multipliers of total bet (identical to Pragmatic Play reference)
+        # Wild has no independent pay — substitute only (cannot land on reel 1)
+        # H1=Rottweiler, H2=Pink dog, H3=Pug, H4=Brown dog
+        # L1=Collar, L2=Bone, L3=A, L4=K, L5=Q, L6=J, L7=10
         self.paytable = {
-            (5, "H1"): 18.75, (4, "H1"): 3.75, (3, "H1"): 1.50,
-            (5, "H2"): 12.50, (4, "H2"): 2.50, (3, "H2"): 1.00,
-            (5, "H3"):  7.50, (4, "H3"): 1.25, (3, "H3"): 0.75,
-            (5, "H4"):  5.00, (4, "H4"): 0.75, (3, "H4"): 0.50,
-            (5, "L1"):  3.75, (4, "L1"): 0.50, (3, "L1"): 0.25,
-            (5, "L2"):  2.50, (4, "L2"): 0.25, (3, "L2"): 0.20,
-            (5, "L3"):  2.50, (4, "L3"): 0.25, (3, "L3"): 0.20,
-            (5, "L4"):  2.00, (4, "L4"): 0.25, (3, "L4"): 0.15,
+            (5, "H1"): 75.0,  (4, "H1"): 15.0,  (3, "H1"): 5.00,
+            (5, "H2"): 50.0,  (4, "H2"): 10.0,  (3, "H2"): 3.50,
+            (5, "H3"): 30.0,  (4, "H3"):  6.0,  (3, "H3"): 2.50,
+            (5, "H4"): 20.0,  (4, "H4"):  4.0,  (3, "H4"): 2.00,
+            (5, "L1"): 15.0,  (4, "L1"):  2.50, (3, "L1"): 1.20,
+            (5, "L2"): 10.0,  (4, "L2"):  2.0,  (3, "L2"): 0.80,
+            (5, "L3"):  5.0,  (4, "L3"):  1.0,  (3, "L3"): 0.50,
+            (5, "L4"):  5.0,  (4, "L4"):  1.0,  (3, "L4"): 0.50,
+            (5, "L5"):  2.50, (4, "L5"):  0.50, (3, "L5"): 0.20,
+            (5, "L6"):  2.50, (4, "L6"):  0.50, (3, "L6"): 0.20,
+            (5, "L7"):  2.50, (4, "L7"):  0.50, (3, "L7"): 0.20,
         }
 
         # 20 paylines — identical pattern to Pragmatic Dog House reference
@@ -92,8 +96,8 @@ class GameConfig(Config):
         # Minimum scatter counts to enter/retrigger freegame
         # Actual spin count randomised in game_executables (8-15 on trigger, +10 retrigger)
         self.freespin_triggers = {
-            self.basegame_type: {3: 8},   # 3 scatters minimum for basegame trigger
-            self.freegame_type: {3: 10},  # retrigger always +10
+            self.basegame_type: {3: 8},
+            self.freegame_type: {3: 10},
         }
         self.anticipation_triggers = {
             self.basegame_type: 2,
@@ -169,10 +173,10 @@ class GameConfig(Config):
                 is_feature=True,
                 is_buybonus=False,
                 distributions=[
-                    Distribution("wincap",    quota=0.001, win_criteria=self.wincap, conditions=base_wincap),
-                    Distribution("freegame",  quota=0.10,  conditions=base_freegame),
-                    Distribution("0",         quota=0.40,  win_criteria=0.0, conditions=base_zero),
-                    Distribution("basegame",  quota=0.499, conditions=base_basegame),
+                    Distribution("wincap",    quota=0.001,  win_criteria=self.wincap, conditions=base_wincap),
+                    Distribution("freegame",  quota=0.003,  conditions=base_freegame),
+                    Distribution("0",         quota=0.746,  win_criteria=0.0, conditions=base_zero),
+                    Distribution("basegame",  quota=0.250,  conditions=base_basegame),
                 ],
             ),
             BetMode(

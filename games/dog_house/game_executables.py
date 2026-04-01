@@ -59,7 +59,7 @@ class GameExecutables(GameCalculations):
             return False
 
         for entry in self.sticky_wilds:
-            entry["mult"] += 2
+            entry["mult"] = min(entry["mult"] + 2, 5)  # cap at 5x
 
         # Reflect updated multipliers on the board immediately
         self.apply_sticky_wilds_to_board()

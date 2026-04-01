@@ -28,7 +28,6 @@ class GameState(GameStateOverride):
 
     def _run_base(self):
         """Standard base-game spin: reveal → evaluate → maybe trigger freegame."""
-        # draw_board handles forced-scatter logic for freegame-bound criteria
         self.draw_board(emit_event=False)
         self.sanitize_board_symbols()
         reveal_event(self)
@@ -38,41 +37,36 @@ class GameState(GameStateOverride):
 
         if self.check_fs_condition() and self.check_freespin_entry():
             self.triggered_freegame = True
-            # Overridden update_freespin_amount grants random 8-15 spins
             self.run_freespin_from_base()
 
     # ── Bonus buy mode ─────────────────────────────────────────────────────────
 
     def _run_bonus(self):
-        """
-        Bonus (buy): skip base reveal entirely.
-        Switch directly to freegame context and start spinning.
-        """
+        """Bonus buy: skip base reveal, go straight to freegame."""
         self.triggered_freegame = True
-        # Switch gametype to freegame and reset spin counter
+        # Switch to freegame context
         self.reset_fs_spin()
+        # Initialise special_syms_on_board so fs_trigger_event can access it
+        self.refresh_special_syms()
         # Grant random 8-15 spins
         self.tot_fs = self.get_random_fs_amount()
-        # Emit fs_trigger as if scatter triggered (basegame_trigger=True cosmetically)
         fs_trigger_event(self, basegame_trigger=True, freegame_trigger=False)
         self.run_freespin()
 
-    # ── Freespin loop ──────────────────────────────────────────────────────────
+    # ── Freegame loop ──────────────────────────────────────────────────────────
 
     def run_freespin(self):
         """
         Freegame with sticky wilds + DogBooster mechanic.
           1. Draw new freegame board.
-          2. Sanitize (scatter reels, wild reel-1 ban).
+          2. Sanitize placement rules.
           3. Re-apply existing sticky wilds onto board.
-          4. Check DogBooster — if found, +2 to every sticky wild multiplier.
+          4. Check DogBooster — +2 to every sticky wild multiplier.
           5. Collect newly landed wilds → lock as sticky.
           6. Evaluate paylines.
           7. Retrigger check (3 scatters → +10 spins).
           8. Wincap check.
         """
-        # Only call reset_fs_spin if coming from base-triggered freegame
-        # (bonus path calls it before run_freespin)
         if self.gametype != self.config.freegame_type:
             self.reset_fs_spin()
 
